@@ -25,10 +25,61 @@ The method called for both the first and second screenshot is the `handleRequest
 
  ## Part 2: Bugs
 
-One of the bugs in lab 3 was
-
-
-
-
-
+- One of the bugs in lab 3 was that for the method `reverseInPlace`, which was intended to take an array, say `{1, 2, 3}` for example, and reverse the positions of the corresponding outer and inner values, so it should yield `{3, 2, 1}`.  
+The method `reverseInPlace` is shown below:
 ```
+static void reverseInPlace(int[] arr) {
+    for(int i = 0; i < arr.length; i+=1) {
+        int temp = arr[i];
+        arr[i] = arr[arr.length-i-1];
+        arr[arr.length-i-1] = temp;
+    }
+}
+```
+A failure inducing input for `reverseInPlace` is shown below:
+```
+public void testReverseInPlace2() {
+        int[] input1 = {1, 2};
+        ArrayExamples.reverseInPlace(input1);`
+        assertArrayEquals(new int[]{ 2, 1 }, ArrayExamples.reversed(input1);
+}
+```
+![image](https://i.imgur.com/TPIR2vF.jpg)
+The reason `2` is expected here but not `1` even though a "reversed" array for an input of `{1, 2}` is because the initial code block for `reverseInPlace` runs twice as many times as it should. 
+
+An input that doesn't indluce failure is shown below:
+```
+public void testReverseInPlace2() {
+        int[] input1 = { 1 };
+        ArrayExamples.reverseInPlace(input1);`
+        assertArrayEquals(new int[]{ 1 }, ArrayExamples.reversed(input1);
+}
+```
+![image](https://i.imgur.com/Tbqe5lu.jpg)
+
+This input doesn't cause failure because reversing an array of only one value will always yield the same array, so the test will always pass for this case.
+
+For reference, here is the method `reverseInPlace` again, before debugging:
+```
+    for(int i = 0; i < arr.length; i+=1) {
+        int temp = arr[i];
+        arr[i] = arr[arr.length-i-1];
+        arr[arr.length-i-1] = temp;
+    }
+}
+```
+
+Now, this is the debugged method `reverseInPlace` running properly:
+```
+    for(int i = 0; i < arr.length/2; i+=1) {
+        int temp = arr[i];
+        arr[i] = arr[arr.length-i-1];
+        arr[arr.length-i-1] = temp;
+    }
+}
+```
+The reason the only fix necessary was changing the runtime of the for loop to `arr.length/2` instead of it being `arr.length` is because what was happening is that the method would run, swap the intended values, then swap them back because the loop would run too many times. A full loop would swap the values, then swap them back to their original positions as if nothing happened at all. To fix this, halving the runtime ensures that the swap is only made the necessary number of times. 
+
+## Part 3: Something you learned
+
+One thing I learned during week 3's lab was how to make my own web server that could be modified at will. I learned about the required imports and methods needed to properly run the server, as well as what each character in the search bar meant, as without every character, the command wouldn't run as intended. 
